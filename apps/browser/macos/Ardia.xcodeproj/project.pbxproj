@@ -399,7 +399,7 @@
 					"\"$(ARDIACORE_STAGE_DIR)/Chromium Framework.framework/Chromium Framework\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ardia.browser;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ardia.fork;
 				PRODUCT_NAME = Ardia;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -434,7 +434,7 @@
 					"\"$(ARDIACORE_STAGE_DIR)/Chromium Framework.framework/Chromium Framework\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ardia.browser;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ardia.fork;
 				PRODUCT_NAME = Ardia;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;

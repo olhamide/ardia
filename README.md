@@ -1,3 +1,23 @@
+> [!WARNING]
+> **This is a personal fork of [mantrakp04/ardia](https://github.com/mantrakp04/ardia), not the official Ardia.**
+>
+> Every change in this fork was made with [Claude](https://claude.ai) (Anthropic's AI). It works for my own use case,
+> but it isn't reviewed, tested or supported beyond that. **Use it at your own risk.** For the real thing, use the
+> [original project](https://github.com/mantrakp04/ardia); the download links below are the original project's
+> releases, not builds of this fork.
+>
+> What this fork changes:
+> - **New tabs after the current tab:** Settings › Tabs › Add new tabs › After the current tab.
+> - **Closing a new tab goes back** to the tab you opened it from, if you haven't switched tabs in between.
+> - **Dragging a link onto a page can be turned off** (Settings › Tabs), so extensions like Arc Peek get the drag.
+> - **Sidebar Color** (Settings › Appearance): White, Grey, Dark or Black, independent of the app's light/dark mode.
+> - **Crisper active tab:** a hairline ring with tight layered shadows in light mode, a lighter layer in dark mode.
+> - **No telemetry:** usage events, errors and crash reports are never sent anywhere.
+> - **Standalone:** its own bundle ID (`com.ardia.fork`, shown as "Ardia Fork") and no auto-updates, so it never
+>   shares data with or gets replaced by the official Ardia.
+>
+> To follow upstream: `git fetch upstream && git rebase upstream/main`.
+
 <p align="center">
   <img src="apps/site/src/assets/app-icon.png" width="128" height="128" alt="Ardia's app icon">
 </p>
