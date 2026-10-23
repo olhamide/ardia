@@ -1,6 +1,6 @@
 import { ActivitySpinner, ContextMenuArea, FadeLabel, MouseArea, Surface, Symbol } from "@ardia/shell";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
-import { Animated, Pressable, TextInput, View, type GestureResponderEvent } from "react-native";
+import { Animated, Pressable, StyleSheet, TextInput, View, type GestureResponderEvent } from "react-native";
 import { closeTab, toggleMute } from "../../lib/actions";
 import { hex, layout, useTheme } from "../../lib/theme";
 import { useBrowser } from "../../store/browser";
@@ -101,9 +101,10 @@ export const TabRow = memo(function TabRow({ tabId, onto = false, shift = null }
                 shadowColor={active ? hex(theme.tabSelectedShadow) : undefined}
                 shadowOpacity={active ? 1 : 0}
                 shadowRadius={theme.tabSelectedShadowRadius}
-                shadowOffset={[0, 0.5]}
+                shadowOffset={theme.tabSelectedShadowOffset}
                 style={{ height: layout.rowHeight, flexDirection: "row", alignItems: "center", paddingLeft: 9 - border, paddingRight: 6 - border }}
               >
+                {active && <ActiveTabAmbient />}
                 {resettable ? (
                   <View {...backToPin.hoverProps}>
                     <Pressable onPress={() => useBrowser.getState().returnToPinnedUrl(tab.id)} tooltip="Back to Pinned URL (⌘↩)">
@@ -234,9 +235,10 @@ export const SplitRowItem = memo(function SplitRowItem({
           shadowColor={active ? hex(theme.tabSelectedShadow) : undefined}
           shadowOpacity={active ? 1 : 0}
           shadowRadius={theme.tabSelectedShadowRadius}
-          shadowOffset={[0, 0.5]}
+          shadowOffset={theme.tabSelectedShadowOffset}
           style={{ height: layout.rowHeight, flexDirection: "row", alignItems: "center", paddingHorizontal: active ? 2 : 3 }}
         >
+          {active && <ActiveTabAmbient />}
           {tabIds.map((id, i) => (
             <View key={id} style={{ flex: 1, flexDirection: "row", alignItems: "center", minWidth: 0 }}>
               {i > 0 && <View style={{ width: 1, height: 16, backgroundColor: theme.divider, marginRight: 2 }} />}
@@ -275,5 +277,21 @@ function SplitPane({ tabId, windowId }: { tabId: string; windowId: string }) {
         </Pressable>
       </ContextMenuArea>
     </View>
+  );
+}
+
+export function ActiveTabAmbient() {
+  const ambient = useTheme().tabSelectedAmbient;
+  if (!ambient) return null;
+  return (
+    <Surface
+      pointerEvents="none"
+      cornerRadius={10}
+      shadowColor={hex(ambient.color)}
+      shadowOpacity={1}
+      shadowRadius={ambient.radius}
+      shadowOffset={ambient.offset}
+      style={StyleSheet.absoluteFill}
+    />
   );
 }

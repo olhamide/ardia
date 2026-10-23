@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, type ReactNode } from "rea
 import { AccessibilityInfo, Animated, Easing, StyleSheet, View } from "react-native";
 import { useShallow } from "zustand/react/shallow";
 import { switchOn } from "../../lib/killSwitches";
-import { hex, layout, useTheme } from "../../lib/theme";
+import { hex, layout, useSidebarTheme } from "../../lib/theme";
 import { useBrowser } from "../../store/browser";
 import { useWindowId } from "../../store/hooks";
 import { Sidebar } from "../Sidebar";
@@ -151,7 +151,7 @@ function SidebarDock({
   arc: boolean;
   lights: readonly [number, number];
 }) {
-  const theme = useTheme();
+  const theme = useSidebarTheme();
   const windowId = useWindowId();
   const moving = useDockMotion((m) => !!m.moving[windowId]);
   const edgeOver = useRef(false);

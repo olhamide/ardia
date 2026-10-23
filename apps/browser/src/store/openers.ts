@@ -31,8 +31,18 @@ function firstRegular(s: BrowserState, w: BrowserWindow, tab: Tab): number {
   return first >= 0 ? first : w.tabIds.length;
 }
 
-const listStart = (s: BrowserState, w: BrowserWindow, tab: Tab) =>
-  s.settings.newTabPosition === "top" ? firstRegular(s, w, tab) : w.tabIds.length;
+function listStart(s: BrowserState, w: BrowserWindow, tab: Tab): number {
+  if (s.settings.newTabPosition === "top") return firstRegular(s, w, tab);
+  if (s.settings.newTabPosition === "afterCurrent") return afterCurrent(s, w, tab) ?? w.tabIds.length;
+  return w.tabIds.length;
+}
+
+function afterCurrent(s: BrowserState, w: BrowserWindow, tab: Tab): number | undefined {
+  const current = w.activeTabIds[tab.profileId];
+  if (!current || !w.tabIds.includes(current) || !regular(s, current)) return undefined;
+  const neighbours = groupOf(s, current)?.tabIds ?? splitOf(s, current)?.tabIds ?? [current];
+  return Math.max(...neighbours.map((id) => w.tabIds.indexOf(id))) + 1;
+}
 
 function afterFamily(s: BrowserState, w: BrowserWindow, tab: Tab, from: number, openerId: string): number {
   const family = new Set([openerId]);
@@ -62,6 +72,11 @@ export function forgetOpeners(s: BrowserState, windowId: string, keep?: string):
   const tabs = { ...s.tabs };
   for (const id of ids) tabs[id] = { ...tabs[id]!, openerId: null };
   return { ...s, tabs };
+}
+
+export function forgetReturnTo(s: BrowserState, left: string | undefined, shown: string): BrowserState {
+  if (!left || left === shown || !s.tabs[left]?.returnToId) return s;
+  return { ...s, tabs: { ...s.tabs, [left]: { ...s.tabs[left]!, returnToId: undefined } } };
 }
 
 export function switchKeepsOpeners(s: BrowserState, from: string, to: string): boolean {

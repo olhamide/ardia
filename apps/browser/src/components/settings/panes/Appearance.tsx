@@ -29,9 +29,54 @@ export function AppearancePane() {
           <ModeChoice key={m.value} mode={m.value} title={m.title} description={m.description} selected={appearance === m.value} onPress={() => choose(m.value)} />
         ))}
       </View>
+      <SidebarColorPicker />
       <AddressBarPicker />
       <AppIconPicker />
     </View>
+  );
+}
+
+const SIDEBAR_COLORS: { value: Settings["sidebarColor"]; title: string; swatch: string | null }[] = [
+  { value: "theme", title: "Profile theme", swatch: null },
+  { value: "white", title: "White", swatch: "#F7F7F8" },
+  { value: "grey", title: "Grey", swatch: "#BDBDBA" },
+  { value: "dark", title: "Dark", swatch: "#2B2B2D" },
+  { value: "black", title: "Black", swatch: "#161617" },
+];
+
+function SidebarColorPicker() {
+  const theme = useTheme();
+  const colors = useFormColors();
+  const sidebarColor = useBrowser((s) => s.settings.sidebarColor);
+  const choose = (value: Settings["sidebarColor"]) => useBrowser.getState().updateSettings({ sidebarColor: value });
+  return (
+    <>
+      <SectionHeader anchor="appearance.sidebarColor" description="Paints the sidebar and the frame around the page. Pages and menus keep the app’s appearance." />
+      <View style={{ flexDirection: "row", gap: 14 }}>
+        {SIDEBAR_COLORS.map((c) => {
+          const selected = sidebarColor === c.value;
+          return (
+            <Pressable key={c.value} onPress={() => choose(c.value)} style={{ alignItems: "center", gap: 6, width: 72 }}>
+              <View
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  padding: 3,
+                  borderWidth: selected ? 2.5 : 1,
+                  borderColor: selected ? colors.accent : colors.groupBorder,
+                }}
+              >
+                <View style={{ flex: 1, borderRadius: 19, overflow: "hidden", backgroundColor: c.swatch ?? theme.windowTint[0] }}>
+                  {!c.swatch && <View style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "50%", backgroundColor: theme.windowTint[1] }} />}
+                </View>
+              </View>
+              <Text style={{ fontSize: 11, color: selected ? theme.textPrimary : theme.textSecondary, textAlign: "center" }}>{c.title}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </>
   );
 }
 

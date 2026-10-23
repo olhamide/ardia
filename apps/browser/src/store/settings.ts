@@ -29,8 +29,9 @@ export type Settings = {
   commandBarPreference: "website" | "search";
 
   tabLayout: "sidebar" | "top";
+  sidebarColor: "theme" | "white" | "grey" | "dark" | "black";
   hideToolbarWhileScrolling: boolean;
-  newTabPosition: "top" | "bottom";
+  newTabPosition: "top" | "bottom" | "afterCurrent";
   newTabOpens: "page" | "commandBar";
   warnBeforeClosingLastTab: boolean;
   undoReopensClosedTab: boolean;
@@ -39,6 +40,7 @@ export type Settings = {
   tabReorderHaptics: boolean;
   extendWebsiteColor: boolean;
   cmdClickCreatesTabGroup: boolean;
+  openLinksDraggedOntoPage: boolean;
   optShiftClickOpensInGroup: boolean;
   peekModifier: PeekModifier;
   autoGroupMeetingTabs: boolean;
@@ -93,6 +95,7 @@ export const DEFAULT_SETTINGS: Settings = {
   searchSuggestions: true,
   commandBarPreference: "website",
   tabLayout: "sidebar",
+  sidebarColor: "theme",
   hideToolbarWhileScrolling: true,
   newTabPosition: "bottom",
   newTabOpens: "page",
@@ -103,6 +106,7 @@ export const DEFAULT_SETTINGS: Settings = {
   tabReorderHaptics: true,
   extendWebsiteColor: true,
   cmdClickCreatesTabGroup: true,
+  openLinksDraggedOntoPage: true,
   optShiftClickOpensInGroup: true,
   peekModifier: "shift",
   autoGroupMeetingTabs: true,

@@ -46,6 +46,7 @@ export type OpenWindowRequest = {
   postBody?: boolean;
   profile?: string;
   point?: { x: number; y: number };
+  linkDrop?: boolean;
 };
 
 export type BlockedPopup = { id: string; url: string; origin: string };

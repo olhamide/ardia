@@ -2254,7 +2254,7 @@ void ArdiaCoreWebViewsSetFieldTiming(BOOL on) {
                       NSPointInRect([self convertPoint:[window convertPointFromScreen:mouse] fromView:nil], self.bounds);
     if (_visible && [@[ @"http", @"https" ] containsObject:scheme] && released && over && now - _linkDropAt > 1) {
       _linkDropAt = now;
-      [self emit:@"openWindow" payload:@{@"url" : url, @"disposition" : @"foreground", @"userGesture" : @YES}];
+      [self emit:@"openWindow" payload:@{@"url" : url, @"disposition" : @"foreground", @"userGesture" : @YES, @"linkDrop" : @YES}];
     }
   } else if ([kind isEqualToString:@"perf"] && main && ACFieldTimingEnabled()) {
     for (NSString *what in @[ @"fcp", @"shown" ]) {

@@ -124,11 +124,16 @@ const ROWS: Record<SettingsPane, Section[]> = {
           description: "With Command Bar, ⌘T and New Tab open the command bar over the page, as in Arc. The tab appears when you pick a result; Esc leaves everything as it was.",
           keywords: ["new tab page", "command bar", "cmd t"],
         },
-        newTabPosition: { title: "Add new tabs to the top", keywords: ["new tab position", "left", "bottom", "order"] },
+        newTabPosition: { title: "Add new tabs", keywords: ["new tab position", "left", "top", "bottom", "order", "after current", "next to"] },
         shareTabsAcrossWindows: {
           title: "Share tabs across windows",
           description: "Every window of a profile lists the same tabs, as in Arc. A tab is live in one window at a time: selecting it in another brings it there, and the first window shows it greyed until you click it. Each window keeps its own selected tab.",
           keywords: ["arc", "multiple windows", "same tabs", "sync windows", "shared sidebar", "unpinned"],
+        },
+        openLinksDraggedOntoPage: {
+          title: "Open links dragged onto the page",
+          description: "Dragging a link and letting go over the page opens it in a new tab. Turn off if an extension uses link drags.",
+          keywords: ["drag", "drop", "link drop", "peek"],
         },
         warnBeforeClosingLastTab: { title: "Warn before closing last tab in a Profile", keywords: ["confirm", "close tab"] },
         tabReorderHaptics: { title: "Haptic feedback when reordering tabs", keywords: ["trackpad", "vibration", "drag"] },
@@ -187,6 +192,16 @@ const ROWS: Record<SettingsPane, Section[]> = {
     {
       section: "Appearance Theme",
       rows: { theme: { title: "Appearance Theme", description: "Also in View › Appearance. Incognito windows are always dark.", keywords: ["dark mode", "light mode", "automatic", "night", "system"] } },
+    },
+    {
+      section: "Sidebar Color",
+      rows: {
+        sidebarColor: {
+          title: "Sidebar Color",
+          description: "Paints the sidebar and the frame around the page. Pages and menus keep the app’s appearance.",
+          keywords: ["sidebar", "white", "grey", "gray", "black", "frame", "chrome", "background"],
+        },
+      },
     },
     {
       section: "Address Bar",

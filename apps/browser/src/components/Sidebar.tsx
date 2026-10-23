@@ -267,7 +267,7 @@ function SidebarPage({ profileId, slot, width, current, resting, docked, glowRoo
       style={{ position: "absolute", top: 0, bottom: 0, left: 0, width, display: resting ? "none" : "flex", ...pageStyle }}
     >
       <PageProfileContext.Provider value={profileId}>
-        <ThemeScope>
+        <ThemeScope sidebar>
           <DragScope enabled={current}>
             <PageContent>
               {(controller) => (

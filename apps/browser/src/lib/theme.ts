@@ -29,13 +29,15 @@ const dark = {
   icon: "#F7F5FFC6",
   iconDisabled: "#F7F5FF4D",
 
-  tabHover: "rgba(255,255,255,0.16)",
+  tabHover: "rgba(255,255,255,0.08)",
   tabPressed: "rgba(255,255,255,0.31)",
-  tabSelected: "rgba(18,18,18,0.5)",
+  tabSelected: "rgba(255,255,255,0.15)",
   tabSelectedText: "#FFFFFF",
-  tabSelectedBorder: ["rgba(255,255,255,0.15)", "rgba(255,255,255,0.15)"] as [string, string],
-  tabSelectedShadow: "rgba(255,255,255,0.15)",
-  tabSelectedShadowRadius: 15,
+  tabSelectedBorder: ["rgba(255,255,255,0.14)", "rgba(255,255,255,0.05)"] as [string, string],
+  tabSelectedShadow: "rgba(0,0,0,0.3)",
+  tabSelectedShadowRadius: 1,
+  tabSelectedShadowOffset: [0, 1] as [number, number],
+  tabSelectedAmbient: null as { color: string; radius: number; offset: [number, number] } | null,
   pinnedResting: "rgba(255,255,255,0.1)",
   pinnedRestingStroke: "rgba(255,255,255,0.14)",
   pinnedSelectedFill: "rgba(255,255,255,0.25)",
@@ -82,11 +84,13 @@ const light: typeof dark = {
 
   tabHover: "rgba(255,255,255,0.55)",
   tabPressed: "rgba(255,255,255,0.7)",
-  tabSelected: "rgba(255,255,255,0.7)",
+  tabSelected: "#FFFFFF",
   tabSelectedText: "#000000",
-  tabSelectedBorder: ["rgba(255,255,255,0.98)", "rgba(0,0,0,0.06)"],
-  tabSelectedShadow: "rgba(0,0,0,0.12)",
-  tabSelectedShadowRadius: 12.5,
+  tabSelectedBorder: ["rgba(0,0,0,0.06)", "rgba(0,0,0,0.15)"],
+  tabSelectedShadow: "rgba(0,0,0,0.1)",
+  tabSelectedShadowRadius: 0.5,
+  tabSelectedShadowOffset: [0, 1],
+  tabSelectedAmbient: { color: "rgba(0,0,0,0.06)", radius: 3, offset: [0, 2] },
   pinnedResting: "rgba(0,0,0,0.05)",
   pinnedRestingStroke: "rgba(0,0,0,0.18)",
   pinnedSelectedFill: "rgba(255,255,255,0.7)",
@@ -251,13 +255,63 @@ function themeOf(s: BrowserState, windowId: string | null, page: string | null):
   return profileTheme(s.profiles[page ?? w?.profileId ?? s.settings.defaultProfileId], s.ui.appDark, !windowId);
 }
 
+export type SidebarColor = BrowserState["settings"]["sidebarColor"];
+
+const SIDEBAR_FILLS: Record<Exclude<SidebarColor, "theme">, { fill: string; dark: boolean; grain: number }> = {
+  white: { fill: "#F7F7F8", dark: false, grain: 0.03 },
+  grey: { fill: "#BDBDBA", dark: false, grain: 0.06 },
+  dark: { fill: "#2B2B2D", dark: true, grain: 0.04 },
+  black: { fill: "#161617", dark: true, grain: 0.03 },
+};
+
+const sidebarCache = new WeakMap<Theme, Map<SidebarColor, Theme>>();
+
+export function sidebarLook(theme: Theme, color: SidebarColor | undefined): Theme {
+  if (!color || color === "theme") return theme;
+  let byColor = sidebarCache.get(theme);
+  if (!byColor) sidebarCache.set(theme, (byColor = new Map()));
+  let look = byColor.get(color);
+  if (!look) {
+    const { fill, dark: isDark, grain } = SIDEBAR_FILLS[color];
+    const channel = (i: number) => parseInt(fill.slice(1 + 2 * i, 3 + 2 * i), 16) / 255;
+    look = {
+      ...theme,
+      ...(isDark ? dark : light),
+      grain: 0,
+      backdrop: {
+        tintColor: fill,
+        tintAlpha: 0,
+        tintLightness: 0,
+        themeColors: [channel(0), channel(1), channel(2), 1],
+        themeOpacity: 1,
+        themeBaseAlpha: 0,
+        themeGrain: grain,
+        themeTexture: "grain",
+        themeAppearance: isDark ? "dark" : "light",
+      },
+      windowTint: [fill, fill],
+      custom: null,
+    };
+    byColor.set(color, look);
+  }
+  return look;
+}
+
 const ThemeContext = createContext<Theme | null>(null);
 
-export function ThemeScope({ children }: { children: ReactNode }) {
+export function ThemeScope({ children, sidebar = false }: { children: ReactNode; sidebar?: boolean }) {
   const windowId = useContext(WindowContext);
   const page = useContext(PageProfileContext);
-  const theme = useBrowser((s) => themeOf(s, windowId, page));
+  const theme = useBrowser((s) => {
+    const base = themeOf(s, windowId, page);
+    return sidebar ? sidebarLook(base, s.settings.sidebarColor) : base;
+  });
   return createElement(ThemeContext.Provider, { value: theme }, children);
+}
+
+export function useSidebarTheme(): Theme {
+  const theme = useTheme();
+  return sidebarLook(theme, useBrowser((s) => s.settings.sidebarColor));
 }
 
 export function useTheme(): Theme {

@@ -412,3 +412,33 @@ test("Clear with nothing pinned opens a New Tab page, and undo puts the tabs bac
   assert.equal(S().clearUnpinnedTabs(w).entries.length, 1);
   assert.equal(S().clearUnpinnedTabs(w).entries.length, 0, "a lone New Tab page has nothing to bring back");
 });
+
+test("with new tabs after the current tab, ⌘T opens next to the shown tab and past its group", () => {
+  reset({ newTabPosition: "afterCurrent" });
+  const [w, a, b] = setup("a", "b", "c");
+  S().activate(b);
+  const n1 = S().newTab(w, { url: "n1.com" });
+  assert.deepEqual(hosts(w), ["a", "b", "n1", "c"]);
+  S().activate(a);
+  S().newTab(w, { url: "n2.com", background: true });
+  assert.deepEqual(hosts(w), ["a", "n2", "b", "n1", "c"]);
+  S().createGroup([b, n1]);
+  S().activate(b);
+  S().newTab(w, { url: "n3.com" });
+  assert.deepEqual(hosts(w), ["a", "n2", "b", "n1", "n3", "c"]);
+});
+
+test("closing a ⌘T tab goes back to the tab you were on, unless you left it first", () => {
+  reset();
+  const [w, a, b] = setup("a", "b", "c");
+  S().activate(a);
+  const n = S().newTab(w, { url: "n.com" });
+  assert.equal(shown(w), "n");
+  S().closeTabs([n]);
+  assert.equal(shown(w), "a");
+  const m = S().newTab(w, { url: "m.com" });
+  S().activate(b);
+  S().activate(m);
+  S().closeTabs([m]);
+  assert.notEqual(shown(w), "a");
+});

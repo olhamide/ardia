@@ -68,6 +68,7 @@ export type Tab = {
   navigation: { url: string; seq: number; userInitiated?: boolean } | null;
   adoptId?: string;
   openerId: string | null;
+  returnToId?: string;
   wakeAdoptId?: string;
   liveItem?: { folderId: string; itemId: string };
   unloaded?: boolean;

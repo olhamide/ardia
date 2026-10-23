@@ -20,7 +20,7 @@ import { WindowProfile } from "./components/layout/WindowProfile";
 import { DockedLayout } from "./components/layout/SidebarDock";
 import { LittleArdiaWindow } from "./components/littleArdia/LittleArdiaWindow";
 import { SidebarOverlays } from "./components/sidebar/Overlays";
-import { layout, ThemeScope, useTheme } from "./lib/theme";
+import { layout, ThemeScope, useSidebarTheme } from "./lib/theme";
 import { useBrowser } from "./store/browser";
 import { useWindowId, WindowContext } from "./store/hooks";
 
@@ -47,7 +47,7 @@ function BrowserWindowRoot({ windowId }: { windowId?: string }) {
 }
 
 function BrowserWindow() {
-  const theme = useTheme();
+  const chrome = useSidebarTheme();
   const windowId = useWindowId();
   const topTabs = useTabLayout() === "top";
   const showStrip = useBrowser((s) => topTabs && !!s.windows[windowId]?.sidebarOpen);
@@ -62,7 +62,7 @@ function BrowserWindow() {
 
   return (
     <View style={{ flex: 1, flexDirection: "row" }} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
-      <WindowBackdrop vibrancy {...theme.backdrop} colors={theme.windowTint} grainOpacity={theme.grain} style={StyleSheet.absoluteFill} />
+      <WindowBackdrop vibrancy {...chrome.backdrop} colors={chrome.windowTint} grainOpacity={chrome.grain} style={StyleSheet.absoluteFill} />
       <WindowProfile />
       <ProfileTint />
       <DockedLayout

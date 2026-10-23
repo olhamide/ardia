@@ -21,7 +21,7 @@ import {
   wake,
   without,
 } from "./model";
-import { forgetOpeners, insertionIndex, openerSuccessor, switchKeepsOpeners } from "./openers";
+import { forgetOpeners, forgetReturnTo, insertionIndex, openerSuccessor, switchKeepsOpeners } from "./openers";
 import { groupWithOpener, onUrlChange, pruneSelection, samePage } from "./organize";
 import { searchUrlPrefix } from "./settings";
 import { mainWindowFor } from "./small";
@@ -153,7 +153,8 @@ export function removeTabs(s: BrowserState, ids: string[], record: boolean): Bro
       const awake = left.filter((id) => !s.tabs[id]?.unloaded);
       const after = awake.length ? awake : left;
       const index = before.indexOf(activeId);
-      const next = openerSuccessor(s, activeId, before, left) ?? after.find((id) => before.indexOf(id) > index) ?? after.at(-1);
+      const returnTo = s.tabs[activeId]?.returnToId;
+      const next = (returnTo && left.includes(returnTo) ? returnTo : undefined) ?? openerSuccessor(s, activeId, before, left) ?? after.find((id) => before.indexOf(id) > index) ?? after.at(-1);
       if (next) activeTabIds[profileId] = next;
       else delete activeTabIds[profileId];
     }
@@ -274,6 +275,8 @@ export function withNewTab(s: BrowserState, windowId: string, o: NewTabOptions =
   const tab = makeTab(windowId, profileId, url, { ...o.snapshot, pinned: o.pinned ?? o.snapshot?.pinned ?? false });
   if (tab.navigation && !o.snapshot) tab.navigation = navigationTo(url, true);
   tab.openerId = o.openerId ?? null;
+  const shownBefore = w.activeTabIds[profileId];
+  if (!o.background && !o.openerId && shownBefore && shownBefore !== tab.id) tab.returnToId = shownBefore;
   tab.pinnedUrl = tab.pinned ? tab.pinnedUrl || url || null : null;
   if (o.adoptId) {
     tab.adoptId = o.adoptId;
@@ -356,7 +359,7 @@ export const createTabsSlice: StateCreator<BrowserState, [], [], TabsSlice> = (s
     const shown = activeTabId(s, tab.windowId);
     let next = apply(s, activated(s, id));
     if (shown && shown !== id && !switchKeepsOpeners(s, shown, id)) next = forgetOpeners(next, tab.windowId);
-    set(next);
+    set(forgetReturnTo(next, shown, id));
   },
 
   handOffPin(id) {

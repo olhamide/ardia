@@ -17,7 +17,7 @@ import { openSettings } from "../settings/windows";
 import { HoverSlot } from "../HoverSlot";
 import { IconButton, useHover } from "../primitives";
 import { useLiveColors, type LiveColors } from "../live/colors";
-import { clickMods, TabRow } from "./TabRow";
+import { ActiveTabAmbient, clickMods, TabRow } from "./TabRow";
 import { Fold, useFold, type FoldEntry } from "./Fold";
 import { GROUP_BORDER, GROUP_HEADER_RADIUS, GROUP_PAD, GROUP_RADIUS } from "./geometry";
 import { useDragFolded, useDragItem } from "./dnd";
@@ -328,9 +328,10 @@ function LiveItemRow({ folderId, item, windowId, indent = 0 }: { folderId: strin
                 shadowColor={active ? hex(theme.tabSelectedShadow) : undefined}
                 shadowOpacity={active ? 1 : 0}
                 shadowRadius={theme.tabSelectedShadowRadius}
-                shadowOffset={[0, 0.5]}
+                shadowOffset={theme.tabSelectedShadowOffset}
                 style={{ height: layout.rowHeight, flexDirection: "row", alignItems: "center", paddingLeft: 9 + indent, paddingRight: 6 }}
               >
+                {active && <ActiveTabAmbient />}
                 {unread ? <View style={{ position: "absolute", left: 2 + indent, width: 5, height: 5, borderRadius: 2.5, backgroundColor: colors.pip }} /> : null}
                 <ItemIcon item={item} completion={completion} colors={colors} />
                 <FadeLabel

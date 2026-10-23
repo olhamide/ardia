@@ -55,10 +55,20 @@ export function TabsPane() {
             minWidth={160}
           />
         </Row>
-        <Row anchor="tabs.newTabPosition" title={top ? "Add new tabs to the left" : "Add new tabs to the top"}>
-          <Toggle value={settings.newTabPosition === "top"} onChange={(v) => update({ newTabPosition: v ? "top" : "bottom" })} />
+        <Row anchor="tabs.newTabPosition">
+          <PopUp
+            value={settings.newTabPosition}
+            options={[
+              { value: "bottom", title: top ? "At the end" : "At the bottom" },
+              { value: "top", title: top ? "At the start" : "At the top" },
+              { value: "afterCurrent", title: "After the current tab" },
+            ]}
+            onChange={(v) => update({ newTabPosition: v })}
+            minWidth={160}
+          />
         </Row>
         {toggle("shareTabsAcrossWindows", "tabs.shareTabsAcrossWindows")}
+        {toggle("openLinksDraggedOntoPage", "tabs.openLinksDraggedOntoPage")}
         {toggle("warnBeforeClosingLastTab", "tabs.warnBeforeClosingLastTab")}
         {toggle("tabReorderHaptics", "tabs.tabReorderHaptics")}
         {toggle("extendWebsiteColor", "tabs.extendWebsiteColor")}

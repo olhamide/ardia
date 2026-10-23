@@ -2,7 +2,7 @@ import type { StripGroup, StripState, StripTab } from "@ardia/ardiacore";
 import type { BrowserState } from "./browser";
 import { rootOf } from "./groups";
 import { engineProfile, pinnedFirst } from "./model";
-import { forgetOpeners, switchKeepsOpeners } from "./openers";
+import { forgetOpeners, forgetReturnTo, switchKeepsOpeners } from "./openers";
 import { groupOf, placing, withGroup } from "./organize";
 import { isPeekTab, withoutPeek } from "./peek";
 import { settleMovedPins } from "./pinMirror";
@@ -274,6 +274,7 @@ function show(s: BrowserState, key: string): BrowserState {
   if (shown === key || (shown && splitOf(s, shown)?.tabIds.includes(key))) return s.peeks[w.id] ? withoutPeek(s, w.id) : s;
   let next = apply(s, activated(s, key));
   if (shown && !switchKeepsOpeners(s, shown, key)) next = forgetOpeners(next, w.id);
+  next = forgetReturnTo(next, shown, key);
   return next;
 }
 

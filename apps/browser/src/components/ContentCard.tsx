@@ -571,6 +571,7 @@ const TabWebView = memo(function TabWebView({ tabId, visible, warm, peekOf }: { 
 
   const onOpenWindow = (request: OpenWindowRequest) => {
     const t = tab();
+    if (request.linkDrop && !useBrowser.getState().settings.openLinksDraggedOntoPage) return;
     if (t) openFromPage(request, { windowId: t.windowId, profileId: t.profileId, tabId });
   };
 

@@ -297,7 +297,7 @@ function StripPage({ profileId, slot, pageWidth, current, resting }: { profileId
       style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: pageWidth + flare * 2, display: resting ? "none" : "flex", ...pageStyle }}
     >
       <PageProfileContext.Provider value={profileId}>
-        <ThemeScope>
+        <ThemeScope sidebar>
           <DockContext.Provider value={strip}>
             <ScrollView
               horizontal
